@@ -50,6 +50,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->statusbar->hide();
 
+    ui->amount->setEnabled(false);
+    ui->topub->setEnabled(false);
+    ui->send_trans->setEnabled(false);
+
     timerId = startTimer(9000);
 
     api_url = "http://91.148.141.219";
@@ -151,6 +155,9 @@ void MainWindow::on_send_trans_clicked()
         msgBox.exec();
     }
 
+    ui->explore_address->setText(ui->topub->text());
+    on_view_clicked();
+
     ui->send_trans->setEnabled(true);
 }
 
@@ -178,6 +185,10 @@ void MainWindow::on_login_clicked()
         ui->newkey->setText("copy");
         ui->explore_address->setText(bpub);
 
+        ui->amount->setEnabled(true);
+        ui->topub->setEnabled(true);
+        ui->send_trans->setEnabled(true);
+
         resync();
     }
     else
@@ -189,6 +200,10 @@ void MainWindow::on_login_clicked()
         ui->balance->setText("0 VFC");
         bpub[0] = 0x00;
         bpriv[0] = 0x00;
+
+        ui->amount->setEnabled(false);
+        ui->topub->setEnabled(false);
+        ui->send_trans->setEnabled(false);
     }
 
 }
