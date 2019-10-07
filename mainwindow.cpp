@@ -114,6 +114,7 @@ void MainWindow::on_send_trans_clicked()
     t.uid = crc64(0, (unsigned char*)suid, strlen(suid));
 
     //Sign the block
+
     QByteArray tba = QByteArray::fromRawData((const char*)&t, sizeof(struct trans));
     QByteArray thash = QCryptographicHash::hash(tba, QCryptographicHash::Sha3_256);
 
@@ -127,7 +128,7 @@ void MainWindow::on_send_trans_clicked()
     thash.truncate(ECC_CURVE);
 
     if(ecdsa_sign(priv, (const uint8_t*)thash.data(), t.owner.key) == 0)
-    //if(ecdsa_sign(priv, hash, t.owner.key) == 0)
+//    if(ecdsa_sign(priv, hash, t.owner.key) == 0)
     {
         QMessageBox msgBox;
         msgBox.setText("Failed to sign the transaction.");
@@ -135,13 +136,12 @@ void MainWindow::on_send_trans_clicked()
         return;
     }
 
+    const uint32_t origin = 0;
     char p[147];
     p[0] = 't';
-    p[1] = 0x00;
-    p[2] = 0x00;
-    p[3] = 0x00;
-    p[4] = 0x00;
-    char* ofs = p+4;
+    char* ofs = p + 1;
+    memcpy(ofs, &origin, sizeof(uint32_t));
+    ofs += sizeof(uint32_t);
     memcpy(ofs, &t.uid, sizeof(uint64_t));
     ofs += sizeof(uint64_t);
     memcpy(ofs, t.from.key, ECC_CURVE+1);
@@ -166,6 +166,7 @@ void MainWindow::on_send_trans_clicked()
     //Sent using the REST API packet sender
     QByteArray pb((char*)(p), 147);
     QString rs = getWeb(api_url + "/rest.php?sendraw=" + pb.toBase64() + "&bytes=147");
+    ui->topub->setText(pb.toBase64());
     if(rs == "1")
     {
         QMessageBox msgBox;
@@ -211,7 +212,7 @@ void MainWindow::on_login_clicked()
         ui->topub->setEnabled(true);
         ui->send_trans->setEnabled(true);
 
-        resync();
+        on_view_clicked();
     }
     else
     {

@@ -26,6 +26,7 @@
 /* 'Words' here refers to uint64_t */
 #define SHA3_KECCAK_SPONGE_WORDS \
     (((1600)/8/*bits to byte*/)/sizeof(uint64_t))
+
 typedef struct sha3_context_ {
     uint64_t saved;             /* the portion of the input message that we
                                  * didn't consume yet */
@@ -50,5 +51,6 @@ void sha3_Init512(void *priv);
 void sha3_Update(void *priv, void const *bufIn, size_t len);
 
 void const *sha3_Finalize(void *priv);
+
 
 #endif
