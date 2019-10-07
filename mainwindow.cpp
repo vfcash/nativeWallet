@@ -93,64 +93,10 @@ void MainWindow::on_send_trans_clicked()
 
     ui->send_trans->setEnabled(false);
 
-    //topub to bytes
-    uint8_t mpub[ECC_CURVE+1];
-    size_t len = ECC_CURVE+1;
-    memset(mpub, 0, sizeof(priv));
-    b58tobin(mpub, &len, ui->topub->text().toUtf8(), (size_t)ui->topub->text().length());
 
-    //Construct Transaction
-    struct trans t;
-    memset(&t, 0, sizeof(struct trans));
     //
-    memcpy(t.from.key, bpub, ECC_CURVE+1);
-    memcpy(t.to.key, mpub, ECC_CURVE+1);
-    t.amount = (uint32_t)(ui->amount->value() * 1000);
 
-    //UID Based on timestamp & signature
-    time_t ltime = time(nullptr);
-    char suid[256];
-    snprintf(suid, sizeof(suid), "%s/%s", asctime(localtime(&ltime)), bpub); //timestamp + base58 from public key
-    t.uid = crc64(0, (unsigned char*)suid, strlen(suid));
-
-    //Sign the block
-
-    QByteArray tba = QByteArray::fromRawData((const char*)&t, sizeof(struct trans));
-    QByteArray thash = QCryptographicHash::hash(tba, QCryptographicHash::Sha3_256);
-
-//    uint8_t hash[ECC_CURVE];
-//    sha3_context c;
-//    sha3_Init256(&c);
-//    sha3_Update(&c, &t, sizeof(struct trans));
-//    sha3_Finalize(&c);
-//    memcpy(hash, &c.sb, ECC_CURVE);
-
-    thash.truncate(ECC_CURVE);
-
-    if(ecdsa_sign(priv, (const uint8_t*)thash.data(), t.owner.key) == 0)
-//    if(ecdsa_sign(priv, hash, t.owner.key) == 0)
-    {
-        QMessageBox msgBox;
-        msgBox.setText("Failed to sign the transaction.");
-        msgBox.exec();
-        return;
-    }
-
-    const uint32_t origin = 0;
-    char p[147];
-    p[0] = 't';
-    char* ofs = p + 1;
-    memcpy(ofs, &origin, sizeof(uint32_t));
-    ofs += sizeof(uint32_t);
-    memcpy(ofs, &t.uid, sizeof(uint64_t));
-    ofs += sizeof(uint64_t);
-    memcpy(ofs, t.from.key, ECC_CURVE+1);
-    ofs += ECC_CURVE+1;
-    memcpy(ofs, t.to.key, ECC_CURVE+1);
-    ofs += ECC_CURVE+1;
-    memcpy(ofs, &t.amount, sizeof(uint32_t));
-    ofs += sizeof(uint32_t);
-    memcpy(ofs, t.owner.key, ECC_CURVE*2);
+    QString rd = getWeb(api_url + "/rest.php?frompriv=" + bpriv + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
 
     ui->explore_address->setText(ui->topub->text());
     on_view_clicked();
@@ -159,29 +105,124 @@ void MainWindow::on_send_trans_clicked()
     time_t delta = abs(time(nullptr) - st);
     while(delta < 3)
     {
-        QThread::sleep((unsigned long)delta);
+        QThread::sleep(1);
         delta = time(nullptr) - st;
     }
 
-    //Sent using the REST API packet sender
-    QByteArray pb((char*)(p), 147);
-    QString rs = getWeb(api_url + "/rest.php?sendraw=" + pb.toBase64() + "&bytes=147");
-    ui->topub->setText(pb.toBase64());
-    if(rs == "1")
-    {
-        QMessageBox msgBox;
-        msgBox.setText("Transaction sent successfully.");
-        msgBox.exec();
-    }
-    else
-    {
-        QMessageBox msgBox;
-        msgBox.setText("Transaction failed.");
-        msgBox.exec();
-    }
+    QMessageBox msgBox;
+    msgBox.setText(rd.replace("[H[J", ""));
+    msgBox.exec();
 
     //Done
     ui->send_trans->setEnabled(true);
+
+    return;
+
+    //
+
+
+//    //topub to bytes
+//    uint8_t mpub[ECC_CURVE+1];
+//    size_t len = ECC_CURVE+1;
+//    memset(mpub, 0, sizeof(priv));
+//    b58tobin(mpub, &len, ui->topub->text().toUtf8(), (size_t)ui->topub->text().length());
+
+//    //Construct Transaction
+//    struct trans t;
+//    memset(&t, 0, sizeof(struct trans));
+//    //
+//    memcpy(t.from.key, bpub, ECC_CURVE+1);
+//    memcpy(t.to.key, mpub, ECC_CURVE+1);
+//    t.amount = (uint32_t)(ui->amount->value() * 1000);
+
+//    //UID Based on timestamp & signature
+//    time_t ltime = time(nullptr);
+//    char suid[256];
+//    snprintf(suid, sizeof(suid), "%s/%s", asctime(localtime(&ltime)), bpub); //timestamp + base58 from public key
+//    t.uid = crc64(0, (unsigned char*)suid, strlen(suid));
+
+//    //Get the signing hash
+//    QString rthash = getWeb(api_url + "/rest.php?uid=" + QString::number(t.uid) + "&frompub=" + bpub + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
+//    uint8_t thash[ECC_CURVE];
+//    len = ECC_CURVE;
+//    memset(thash, 0, sizeof(thash));
+//    b58tobin(thash, &len, rthash.toUtf8(), (size_t)rthash.toUtf8().length());
+
+////    QMessageBox msgBox;
+////    msgBox.setText(api_url + "/rest.php?uid=" + QString::number(t.uid) + "&frompub=" + bpub + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
+////    msgBox.exec();
+
+////    msgBox.setText(rthash);
+////    msgBox.exec();
+
+//    //Sign the block
+////    QByteArray tba = QByteArray::fromRawData((const char*)&t, sizeof(struct trans));
+////    QByteArray thash = QCryptographicHash::hash(tba, QCryptographicHash::Sha3_256);
+////    thash.truncate(ECC_CURVE);
+////    if(ecdsa_sign(priv, (const uint8_t*)thash.data(), t.owner.key) == 0)
+
+////    uint8_t thash[ECC_CURVE];
+////    sha3_context c;
+////    sha3_Init256(&c);
+////    sha3_Update(&c, &t, sizeof(struct trans));
+////    sha3_Finalize(&c);
+////    memcpy(thash, &c.sb, ECC_CURVE);
+////    if(ecdsa_sign(priv, thash, t.owner.key) == 0)
+
+//    if(ecdsa_sign(priv, thash, t.owner.key) == 0)
+//    {
+//        QMessageBox msgBox;
+//        msgBox.setText("Failed to sign the transaction.");
+//        msgBox.exec();
+//        return;
+//    }
+
+//    const uint32_t origin = 0;
+//    char p[147];
+//    p[0] = 't';
+//    char* ofs = p + 1;
+//    memcpy(ofs, &origin, sizeof(uint32_t));
+//    ofs += sizeof(uint32_t);
+//    memcpy(ofs, &t.uid, sizeof(uint64_t));
+//    ofs += sizeof(uint64_t);
+//    memcpy(ofs, t.from.key, ECC_CURVE+1);
+//    ofs += ECC_CURVE+1;
+//    memcpy(ofs, t.to.key, ECC_CURVE+1);
+//    ofs += ECC_CURVE+1;
+//    memcpy(ofs, &t.amount, sizeof(uint32_t));
+//    ofs += sizeof(uint32_t);
+//    memcpy(ofs, t.owner.key, ECC_CURVE*2);
+
+//    ui->explore_address->setText(ui->topub->text());
+//    on_view_clicked();
+
+//    //Ensure full 3 sec wait between transactions
+//    time_t delta = abs(time(nullptr) - st);
+//    while(delta < 3)
+//    {
+//        QThread::sleep(1);
+//        delta = time(nullptr) - st;
+//    }
+
+//    //Sent using the REST API packet sender
+//    QByteArray pb((char*)(p), 147);
+//    QString rs = getWeb(api_url + "/rest.php?sendraw=" + pb.toBase64() + "&bytes=147");
+//    //ui->topub->setText(pb.toBase64());
+//    if(rs == "1")
+//    {
+//        QMessageBox msgBox;
+//        msgBox.setText("Transaction sent successfully.");
+//        msgBox.exec();
+//    }
+//    else
+//    {
+//        QMessageBox msgBox;
+//        msgBox.setText("Transaction failed.");
+//        msgBox.exec();
+//    }
+
+//    //Done
+//    ui->send_trans->setEnabled(true);
 }
 
 void MainWindow::on_login_clicked()
