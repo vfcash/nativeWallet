@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QClipboard>
+#include <QScrollBar>
 #include <QCryptographicHash>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
@@ -69,8 +70,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::resync()
 {
-    on_view_clicked();
-
     if(QString(bpub) != "")
     {
         QString bal = getWeb(api_url + "/rest.php?balance=" + QString(bpub));
@@ -165,7 +164,8 @@ void MainWindow::on_send_trans_clicked()
     }
 
     //Sent using the REST API packet sender
-    QString rs = getWeb(api_url + "/rest.php?sendraw=" + QString(p).toUtf8().toBase64() + "&bytes=147");
+    QByteArray pb((char*)(p), 147);
+    QString rs = getWeb(api_url + "/rest.php?sendraw=" + pb.toBase64() + "&bytes=147");
     if(rs == "1")
     {
         QMessageBox msgBox;
@@ -245,6 +245,8 @@ void MainWindow::on_view_clicked()
             fr += l2[0] + ", " + l2[3] + ", " + l2[1] + ", " + l2[2] + "\n";
     }
     ui->explore_result->setText(fr);
+    QScrollBar *scrollbar = ui->explore_result->verticalScrollBar();
+    scrollbar->setValue(scrollbar->maximum());
 }
 
 void MainWindow::on_explore_address_returnPressed()
