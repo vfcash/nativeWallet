@@ -90,6 +90,8 @@ void MainWindow::on_send_trans_clicked()
     if(ui->topub->text() == "")
         return;
 
+    const time_t st = time(nullptr);
+
     ui->send_trans->setEnabled(false);
 
     //topub to bytes
@@ -116,7 +118,17 @@ void MainWindow::on_send_trans_clicked()
     QByteArray tba = QByteArray::fromRawData((const char*)&t, sizeof(struct trans));
     QByteArray thash = QCryptographicHash::hash(tba, QCryptographicHash::Sha3_256);
 
+//    uint8_t hash[ECC_CURVE];
+//    sha3_context c;
+//    sha3_Init256(&c);
+//    sha3_Update(&c, &t, sizeof(struct trans));
+//    sha3_Finalize(&c);
+//    memcpy(hash, &c.sb, ECC_CURVE);
+
+    thash.truncate(ECC_CURVE);
+
     if(ecdsa_sign(priv, (const uint8_t*)thash.data(), t.owner.key) == 0)
+    //if(ecdsa_sign(priv, hash, t.owner.key) == 0)
     {
         QMessageBox msgBox;
         msgBox.setText("Failed to sign the transaction.");
@@ -141,6 +153,18 @@ void MainWindow::on_send_trans_clicked()
     ofs += sizeof(uint32_t);
     memcpy(ofs, t.owner.key, ECC_CURVE*2);
 
+    ui->explore_address->setText(ui->topub->text());
+    on_view_clicked();
+
+    //Ensure full 3 sec wait between transactions
+    time_t delta = abs(time(nullptr) - st);
+    while(delta < 3)
+    {
+        QThread::sleep((unsigned long)delta);
+        delta = time(nullptr) - st;
+    }
+
+    //Sent using the REST API packet sender
     QString rs = getWeb(api_url + "/rest.php?sendraw=" + QString(p).toUtf8().toBase64() + "&bytes=147");
     if(rs == "1")
     {
@@ -155,9 +179,7 @@ void MainWindow::on_send_trans_clicked()
         msgBox.exec();
     }
 
-    ui->explore_address->setText(ui->topub->text());
-    on_view_clicked();
-
+    //Done
     ui->send_trans->setEnabled(true);
 }
 
