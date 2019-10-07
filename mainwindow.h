@@ -36,6 +36,27 @@ protected:
     QString api_url;
     void resync();
 
+    struct addr
+    {
+        uint8_t key[ECC_CURVE+1];
+    };
+    typedef struct addr addr;
+
+    struct sig
+    {
+        uint8_t key[ECC_CURVE*2];
+    };
+    typedef struct sig sig;
+
+    struct trans
+    {
+        uint64_t uid;
+        addr from;
+        addr to;
+        uint32_t amount;
+        sig owner;
+    };
+
 private slots:
     void on_newkey_clicked();
     void on_send_trans_clicked();

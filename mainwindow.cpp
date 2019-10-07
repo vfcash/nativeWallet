@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QClipboard>
+#include <QCryptographicHash>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QDesktopServices>
@@ -82,7 +83,75 @@ void MainWindow::timerEvent(QTimerEvent *event)
 
 void MainWindow::on_send_trans_clicked()
 {
+    if(ui->topub->text() == "")
+        return;
+
+    ui->send_trans->setEnabled(false);
+
+    //topub to bytes
+    uint8_t mpub[ECC_CURVE+1];
+    size_t len = ECC_CURVE+1;
+    memset(mpub, 0, sizeof(priv));
+    b58tobin(mpub, &len, ui->topub->text().toUtf8(), (size_t)ui->topub->text().length());
+
+    //Construct Transaction
+    struct trans t;
+    memset(&t, 0, sizeof(struct trans));
     //
+    memcpy(t.from.key, bpub, ECC_CURVE+1);
+    memcpy(t.to.key, mpub, ECC_CURVE+1);
+    t.amount = (uint32_t)(ui->amount->value() * 1000);
+
+    //UID Based on timestamp & signature
+    time_t ltime = time(nullptr);
+    char suid[256];
+    snprintf(suid, sizeof(suid), "%s/%s", asctime(localtime(&ltime)), bpub); //timestamp + base58 from public key
+    t.uid = crc64(0, (unsigned char*)suid, strlen(suid));
+
+    //Sign the block
+    QByteArray tba = QByteArray::fromRawData((const char*)&t, sizeof(struct trans));
+    QByteArray thash = QCryptographicHash::hash(tba, QCryptographicHash::Sha3_256);
+
+    if(ecdsa_sign(priv, (const uint8_t*)thash.data(), t.owner.key) == 0)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Failed to sign the transaction.");
+        msgBox.exec();
+        return;
+    }
+
+    char p[147];
+    p[0] = 't';
+    p[1] = 0x00;
+    p[2] = 0x00;
+    p[3] = 0x00;
+    p[4] = 0x00;
+    char* ofs = p+4;
+    memcpy(ofs, &t.uid, sizeof(uint64_t));
+    ofs += sizeof(uint64_t);
+    memcpy(ofs, t.from.key, ECC_CURVE+1);
+    ofs += ECC_CURVE+1;
+    memcpy(ofs, t.to.key, ECC_CURVE+1);
+    ofs += ECC_CURVE+1;
+    memcpy(ofs, &t.amount, sizeof(uint32_t));
+    ofs += sizeof(uint32_t);
+    memcpy(ofs, t.owner.key, ECC_CURVE*2);
+
+    QString rs = getWeb(api_url + "/rest.php?sendraw=" + QString(p).toUtf8().toBase64() + "&bytes=147");
+    if(rs == "1")
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Transaction sent successfully.");
+        msgBox.exec();
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Transaction failed.");
+        msgBox.exec();
+    }
+
+    ui->send_trans->setEnabled(true);
 }
 
 void MainWindow::on_login_clicked()
@@ -159,6 +228,14 @@ void MainWindow::on_newkey_clicked()
         size_t len = 256;
         b58enc(bpub, &len, pub, ECC_CURVE+1);
         b58enc(bpriv, &len, priv, ECC_CURVE);
+
+        //Append created private key to file as backup
+        QFile file(QDir::homePath() + "/.vfc-keys.priv");
+        if (file.open(QIODevice::Append))
+        {
+            QTextStream stream(&file);
+            stream << bpriv << endl;
+        }
 
         //Set private key in dialog
         ui->loginpriv->setText(bpriv);
