@@ -110,7 +110,7 @@ void MainWindow::on_send_trans_clicked()
     }
 
     QMessageBox msgBox;
-    msgBox.setText(rd.replace("[H[J", ""));
+    msgBox.setText(rd.replace(" > ", " > \n").replace("[H[J", "").replace("Transaction Sent, but unable to verify it's success. Refer to sent transactions for confirmation. Trying again..\n\n", ""));
     msgBox.exec();
 
     //Done
