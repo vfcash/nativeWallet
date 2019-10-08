@@ -180,13 +180,14 @@ void MainWindow::on_privsend_clicked()
 
     //Base58 encode
     char b58p[384];
-    memset(b58p, 0, sizeof(b58p));
     len = 384;
+    memset(b58p, 0, len);
     b58enc(b58p, &len, p, 147);
 
     //Send using the REST API packet sender
     getWeb(api_url + "/rest.php?stp=" + QString(b58p));
 
+    //Prep ui
     ui->explore_address->setText(ui->topub->text());
     on_view_clicked();
 
