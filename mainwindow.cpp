@@ -88,8 +88,21 @@ void MainWindow::timerEvent(QTimerEvent *event)
 
 void MainWindow::on_privsend_clicked()
 {
-    if(ui->topub->text() == "" || bbal <= 0)
+    if(ui->topub->text() == "")
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Please insert a receiver / send to address.");
+        msgBox.exec();
         return;
+    }
+
+    if(bbal <= 0)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("You do not have the balance to make this transaction.");
+        msgBox.exec();
+        return;
+    }
 
     const time_t st = time(nullptr);
     ui->privsend->setEnabled(false);
@@ -209,8 +222,21 @@ void MainWindow::on_privsend_clicked()
 
 void MainWindow::on_send_trans_clicked()
 {
-    if(ui->topub->text() == "" || bbal <= 0)
+    if(ui->topub->text() == "")
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Please insert a receiver / send to address.");
+        msgBox.exec();
         return;
+    }
+
+    if(bbal <= 0)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("You do not have the balance to make this transaction.");
+        msgBox.exec();
+        return;
+    }
 
     const time_t st = time(nullptr);
     ui->send_trans->setEnabled(false);
