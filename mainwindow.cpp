@@ -195,7 +195,7 @@ void MainWindow::on_privsend_clicked()
     }
 
     QMessageBox msgBox;
-    msgBox.setText("Transaction sent.");
+    msgBox.setText("Transaction sent.\nTXID: " + QString::number(t.uid));
     msgBox.exec();
 
     //Prep ui
