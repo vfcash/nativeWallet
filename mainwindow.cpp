@@ -99,7 +99,7 @@ void MainWindow::on_privsend_clicked()
     if(bbal <= 0)
     {
         QMessageBox msgBox;
-        msgBox.setText("You do not have the balance to make this transaction.");
+        msgBox.setText("You do not have the balance to make this transaction of " + QString::number(ui->amount->value()) + " VFC.");
         msgBox.exec();
         return;
     }
@@ -233,7 +233,7 @@ void MainWindow::on_send_trans_clicked()
     if(bbal <= 0)
     {
         QMessageBox msgBox;
-        msgBox.setText("You do not have the balance to make this transaction.");
+        msgBox.setText("You do not have the balance to make this transaction of " + QString::number(ui->amount->value()) + " VFC.");
         msgBox.exec();
         return;
     }
