@@ -1,4 +1,5 @@
 ## VF Cash nativeWallet
+[https://github.com/vfcash/RELEASES/blob/master/vfwallet.jpg]
 ### Windows / Linux / OS X
 A linux build is provided in the bin directory.
 
