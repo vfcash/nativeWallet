@@ -52,6 +52,7 @@ public:
     QLabel *label_20;
     QPushButton *view;
     QTextEdit *explore_result;
+    QPushButton *privsend;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -96,13 +97,13 @@ public:
         amount->setSingleStep(0.001000000000000);
         topub = new QLineEdit(centralwidget);
         topub->setObjectName(QString::fromUtf8("topub"));
-        topub->setGeometry(QRect(10, 140, 511, 31));
+        topub->setGeometry(QRect(10, 140, 461, 31));
         label_10 = new QLabel(centralwidget);
         label_10->setObjectName(QString::fromUtf8("label_10"));
         label_10->setGeometry(QRect(10, 120, 221, 20));
         send_trans = new QPushButton(centralwidget);
         send_trans->setObjectName(QString::fromUtf8("send_trans"));
-        send_trans->setGeometry(QRect(530, 140, 51, 31));
+        send_trans->setGeometry(QRect(470, 140, 51, 31));
         QFont font1;
         font1.setBold(true);
         font1.setWeight(75);
@@ -174,6 +175,10 @@ public:
         explore_result->setObjectName(QString::fromUtf8("explore_result"));
         explore_result->setGeometry(QRect(10, 260, 571, 361));
         explore_result->setReadOnly(true);
+        privsend = new QPushButton(centralwidget);
+        privsend->setObjectName(QString::fromUtf8("privsend"));
+        privsend->setGeometry(QRect(530, 140, 51, 31));
+        privsend->setFont(font1);
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -207,6 +212,7 @@ public:
         label_19->setText(QCoreApplication::translate("MainWindow", "<a href=\"https://t.me/vfcash\">Telegram</a>", nullptr));
         label_20->setText(QCoreApplication::translate("MainWindow", "<a href=\"https://discord.gg/VFa4A5v\">Discord</a>", nullptr));
         view->setText(QCoreApplication::translate("MainWindow", "Load", nullptr));
+        privsend->setText(QCoreApplication::translate("MainWindow", "Priv", nullptr));
     } // retranslateUi
 
 };

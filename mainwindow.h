@@ -64,5 +64,6 @@ private slots:
     void on_login_clicked();
     void on_explore_address_returnPressed();
     void on_view_clicked();
+    void on_privsend_clicked();
 };
 #endif // MAINWINDOW_H

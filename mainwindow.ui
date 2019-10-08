@@ -125,7 +125,7 @@
      <rect>
       <x>10</x>
       <y>140</y>
-      <width>511</width>
+      <width>461</width>
       <height>31</height>
      </rect>
     </property>
@@ -146,7 +146,7 @@
    <widget class="QPushButton" name="send_trans">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>470</x>
       <y>140</y>
       <width>51</width>
       <height>31</height>
@@ -415,6 +415,25 @@
     </property>
     <property name="readOnly">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="privsend">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>140</y>
+      <width>51</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Priv</string>
     </property>
    </widget>
   </widget>
