@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->amount->setEnabled(false);
     ui->topub->setEnabled(false);
     ui->send_trans->setEnabled(false);
+    ui->privsend->setEnabled(false);
 
     timerId = startTimer(9000);
 
@@ -264,6 +265,7 @@ void MainWindow::on_login_clicked()
         ui->amount->setEnabled(true);
         ui->topub->setEnabled(true);
         ui->send_trans->setEnabled(true);
+        ui->privsend->setEnabled(true);
 
         on_view_clicked();
     }
@@ -282,6 +284,7 @@ void MainWindow::on_login_clicked()
         ui->amount->setEnabled(false);
         ui->topub->setEnabled(false);
         ui->send_trans->setEnabled(false);
+        ui->privsend->setEnabled(false);
     }
 
 }
