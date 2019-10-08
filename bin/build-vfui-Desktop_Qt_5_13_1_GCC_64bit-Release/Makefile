@@ -56,15 +56,13 @@ SOURCES       = ../../base58.c \
 		../../crc64.c \
 		../../ecc.c \
 		../../main.cpp \
-		../../mainwindow.cpp \
-		../../sha3.c qrc_res.cpp \
+		../../mainwindow.cpp qrc_res.cpp \
 		moc_mainwindow.cpp
 OBJECTS       = base58.o \
 		crc64.o \
 		ecc.o \
 		main.o \
 		mainwindow.o \
-		sha3.o \
 		qrc_res.o \
 		moc_mainwindow.o
 DIST          = ../../favicon.png \
@@ -244,6 +242,7 @@ DIST          = ../../favicon.png \
 		/Qt/5.13.1/gcc_64/mkspecs/features/qt_config.prf \
 		/Qt/5.13.1/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/Qt/5.13.1/gcc_64/mkspecs/features/spec_post.prf \
+		../../.qmake.stash \
 		/Qt/5.13.1/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/Qt/5.13.1/gcc_64/mkspecs/features/toolchain.prf \
 		/Qt/5.13.1/gcc_64/mkspecs/features/default_pre.prf \
@@ -266,13 +265,11 @@ DIST          = ../../favicon.png \
 		../../../../vfwallet.pro ../../base58.h \
 		../../crc64.h \
 		../../ecc.h \
-		../../mainwindow.h \
-		../../sha3.h ../../base58.c \
+		../../mainwindow.h ../../base58.c \
 		../../crc64.c \
 		../../ecc.c \
 		../../main.cpp \
-		../../mainwindow.cpp \
-		../../sha3.c
+		../../mainwindow.cpp
 QMAKE_TARGET  = vfwallet
 DESTDIR       = 
 TARGET        = vfwallet
@@ -460,6 +457,7 @@ Makefile: ../../vfwallet.pro ../../../Qt/5.13.1/gcc_64/mkspecs/features/spec_pre
 		../../../Qt/5.13.1/gcc_64/mkspecs/features/qt_config.prf \
 		../../../Qt/5.13.1/gcc_64/mkspecs/linux-g++/qmake.conf \
 		../../../Qt/5.13.1/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../../Qt/5.13.1/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../../Qt/5.13.1/gcc_64/mkspecs/features/toolchain.prf \
 		../../../Qt/5.13.1/gcc_64/mkspecs/features/default_pre.prf \
@@ -658,6 +656,7 @@ Makefile: ../../vfwallet.pro ../../../Qt/5.13.1/gcc_64/mkspecs/features/spec_pre
 ../../../Qt/5.13.1/gcc_64/mkspecs/features/qt_config.prf:
 ../../../Qt/5.13.1/gcc_64/mkspecs/linux-g++/qmake.conf:
 ../../../Qt/5.13.1/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 ../../../Qt/5.13.1/gcc_64/mkspecs/features/exclusive_builds.prf:
 ../../../Qt/5.13.1/gcc_64/mkspecs/features/toolchain.prf:
 ../../../Qt/5.13.1/gcc_64/mkspecs/features/default_pre.prf:
@@ -695,8 +694,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../res.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents ../../../Qt/5.13.1/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../base58.h ../../crc64.h ../../ecc.h ../../mainwindow.h ../../sha3.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../base58.c ../../crc64.c ../../ecc.c ../../main.cpp ../../mainwindow.cpp ../../sha3.c $(DISTDIR)/
+	$(COPY_FILE) --parents ../../base58.h ../../crc64.h ../../ecc.h ../../mainwindow.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../base58.c ../../crc64.c ../../ecc.c ../../main.cpp ../../mainwindow.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -853,7 +852,6 @@ moc_mainwindow.cpp: ../../mainwindow.h \
 		../../base58.h \
 		../../crc64.h \
 		../../ecc.h \
-		../../sha3.h \
 		moc_predefs.h \
 		../../../Qt/5.13.1/gcc_64/bin/moc
 	/home/v/Qt/5.13.1/gcc_64/bin/moc $(DEFINES) --include /home/v/nativeWallet/bin/build-vfui-Desktop_Qt_5_13_1_GCC_64bit-Release/moc_predefs.h -I/home/v/Qt/5.13.1/gcc_64/mkspecs/linux-g++ -I/home/v/nativeWallet -I/home/v/Qt/5.13.1/gcc_64/include -I/home/v/Qt/5.13.1/gcc_64/include/QtWidgets -I/home/v/Qt/5.13.1/gcc_64/include/QtGui -I/home/v/Qt/5.13.1/gcc_64/include/QtNetwork -I/home/v/Qt/5.13.1/gcc_64/include/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
@@ -998,7 +996,6 @@ main.o: ../../main.cpp ../../mainwindow.h \
 		../../base58.h \
 		../../crc64.h \
 		../../ecc.h \
-		../../sha3.h \
 		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QApplication \
 		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qapplication.h \
 		../../../Qt/5.13.1/gcc_64/include/QtCore/qcoreapplication.h \
@@ -1126,6 +1123,11 @@ mainwindow.o: ../../mainwindow.cpp ../../../Qt/5.13.1/gcc_64/include/QtCore/QPro
 		../../../Qt/5.13.1/gcc_64/include/QtGui/qtouchdevice.h \
 		../../../Qt/5.13.1/gcc_64/include/QtGui/QClipboard \
 		../../../Qt/5.13.1/gcc_64/include/QtGui/qclipboard.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QScrollBar \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qscrollbar.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qabstractslider.h \
+		../../../Qt/5.13.1/gcc_64/include/QtCore/QCryptographicHash \
+		../../../Qt/5.13.1/gcc_64/include/QtCore/qcryptographichash.h \
 		../../../Qt/5.13.1/gcc_64/include/QtNetwork/QNetworkAccessManager \
 		../../../Qt/5.13.1/gcc_64/include/QtNetwork/qnetworkaccessmanager.h \
 		../../../Qt/5.13.1/gcc_64/include/QtNetwork/qtnetworkglobal.h \
@@ -1143,7 +1145,6 @@ mainwindow.o: ../../mainwindow.cpp ../../../Qt/5.13.1/gcc_64/include/QtCore/QPro
 		../../../Qt/5.13.1/gcc_64/include/QtNetwork/qabstractsocket.h \
 		../../../Qt/5.13.1/gcc_64/include/QtNetwork/qsslerror.h \
 		../../../Qt/5.13.1/gcc_64/include/QtNetwork/qsslcertificate.h \
-		../../../Qt/5.13.1/gcc_64/include/QtCore/qcryptographichash.h \
 		../../../Qt/5.13.1/gcc_64/include/QtCore/qdatetime.h \
 		../../../Qt/5.13.1/gcc_64/include/QtNetwork/qssl.h \
 		../../../Qt/5.13.1/gcc_64/include/QtCore/QFlags \
@@ -1160,17 +1161,46 @@ mainwindow.o: ../../mainwindow.cpp ../../../Qt/5.13.1/gcc_64/include/QtCore/QPro
 		../../base58.h \
 		../../crc64.h \
 		../../ecc.h \
-		../../sha3.h \
 		../../mainwindow.h \
 		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qmainwindow.h \
 		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qtabwidget.h \
 		../../../Qt/5.13.1/gcc_64/include/QtGui/qicon.h \
-		ui_mainwindow.h
+		ui_mainwindow.h \
+		../../../Qt/5.13.1/gcc_64/include/QtGui/QIcon \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QApplication \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qapplication.h \
+		../../../Qt/5.13.1/gcc_64/include/QtCore/qcoreapplication.h \
+		../../../Qt/5.13.1/gcc_64/include/QtCore/qeventloop.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../../Qt/5.13.1/gcc_64/include/QtGui/qguiapplication.h \
+		../../../Qt/5.13.1/gcc_64/include/QtGui/qinputmethod.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QDoubleSpinBox \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qspinbox.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		../../../Qt/5.13.1/gcc_64/include/QtGui/qvalidator.h \
+		../../../Qt/5.13.1/gcc_64/include/QtCore/qregularexpression.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QFrame \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qframe.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QLabel \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qlabel.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QLineEdit \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qlineedit.h \
+		../../../Qt/5.13.1/gcc_64/include/QtGui/qtextcursor.h \
+		../../../Qt/5.13.1/gcc_64/include/QtGui/qtextformat.h \
+		../../../Qt/5.13.1/gcc_64/include/QtGui/qpen.h \
+		../../../Qt/5.13.1/gcc_64/include/QtGui/qtextoption.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QPushButton \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qpushbutton.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qabstractbutton.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QStatusBar \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../../Qt/5.13.1/gcc_64/include/QtGui/qtextdocument.h \
+		../../../Qt/5.13.1/gcc_64/include/QtWidgets/QWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
-
-sha3.o: ../../sha3.c ../../sha3.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o sha3.o ../../sha3.c
 
 qrc_res.o: qrc_res.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_res.o qrc_res.cpp

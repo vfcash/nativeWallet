@@ -6,7 +6,6 @@
 #include "base58.h"
 #include "crc64.h"
 #include "ecc.h"
-#include "sha3.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

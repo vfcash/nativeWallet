@@ -21,15 +21,13 @@ SOURCES += \
     crc64.c \
     ecc.c \
     main.cpp \
-    mainwindow.cpp \
-    sha3.c
+    mainwindow.cpp
 
 HEADERS += \
     base58.h \
     crc64.h \
     ecc.h \
-    mainwindow.h \
-    sha3.h
+    mainwindow.h
 
 FORMS += \
     mainwindow.ui

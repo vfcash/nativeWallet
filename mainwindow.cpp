@@ -1,3 +1,20 @@
+//    //Sign the block
+//    QByteArray tba = QByteArray::fromRawData((const char*)&t, sizeof(struct trans));
+//    QByteArray tohash = QCryptographicHash::hash(tba, QCryptographicHash::Sha3_256);
+//    char bohash[256];
+//    memset(bohash, 0, sizeof(bohash));
+//    len = 256;
+//    b58enc(bohash, &len, (const void*)tohash.data(), ECC_CURVE);
+
+//    msgBox.setText(rthash);
+//    msgBox.exec();
+
+//    msgBox.setText(bohash);
+//    msgBox.exec();
+
+//    thash.truncate(ECC_CURVE);
+//    if(ecdsa_sign(priv, (const uint8_t*)thash.data(), t.owner.key) == 0)
+
 #include <QProcess>
 #include <QLocale>
 #include <QDir>
@@ -15,7 +32,6 @@
 #include "base58.h"
 #include "crc64.h"
 #include "ecc.h"
-#include "sha3.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -88,6 +104,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 
 void MainWindow::on_privsend_clicked()
 {
+    //Check input is good
     if(ui->topub->text() == "")
     {
         QMessageBox msgBox;
@@ -108,7 +125,7 @@ void MainWindow::on_privsend_clicked()
     ui->privsend->setEnabled(false);
 
 
-    //topub to bytes
+    //base58 to bytes
     uint8_t mpub[ECC_CURVE+1];
     size_t len = ECC_CURVE+1;
     memset(mpub, 0, sizeof(priv));
@@ -122,7 +139,7 @@ void MainWindow::on_privsend_clicked()
     memcpy(t.to.key, mpub, ECC_CURVE+1);
     t.amount = (uint32_t)(ui->amount->value() * 1000);
 
-    //UID Based on timestamp & signature
+    //Creating a Transaction UID
     time_t ltime = time(nullptr);
     char suid[256];
     snprintf(suid, sizeof(suid), "%s/%s", asctime(localtime(&ltime)), bpub); //timestamp + base58 from public key
@@ -135,35 +152,7 @@ void MainWindow::on_privsend_clicked()
     memset(thash, 0, sizeof(thash));
     b58tobin(thash, &len, rthash.toUtf8(), (size_t)rthash.toUtf8().length());
 
-//    QMessageBox msgBox;
-//    msgBox.setText(api_url + "/rest.php?uid=" + QString::number(t.uid) + "&frompub=" + bpub + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
-//    msgBox.exec();
-
-//    //Sign the block
-//    QByteArray tba = QByteArray::fromRawData((const char*)&t, sizeof(struct trans));
-//    QByteArray tohash = QCryptographicHash::hash(tba, QCryptographicHash::Sha3_256);
-//    char bohash[256];
-//    memset(bohash, 0, sizeof(bohash));
-//    len = 256;
-//    b58enc(bohash, &len, (const void*)tohash.data(), ECC_CURVE);
-
-//    msgBox.setText(rthash);
-//    msgBox.exec();
-
-//    msgBox.setText(bohash);
-//    msgBox.exec();
-
-//    thash.truncate(ECC_CURVE);
-//    if(ecdsa_sign(priv, (const uint8_t*)thash.data(), t.owner.key) == 0)
-
-//    uint8_t thash[ECC_CURVE];
-//    sha3_context c;
-//    sha3_Init256(&c);
-//    sha3_Update(&c, &t, sizeof(struct trans));
-//    sha3_Finalize(&c);
-//    memcpy(thash, &c.sb, ECC_CURVE);
-//    if(ecdsa_sign(priv, thash, t.owner.key) == 0)
-
+    //Sign transaction with hash
     if(ecdsa_sign(priv, thash, t.owner.key) == 0)
     {
         QMessageBox msgBox;
@@ -172,6 +161,7 @@ void MainWindow::on_privsend_clicked()
         return;
     }
 
+    //Construct packet
     const uint32_t origin = 0;
     char p[147];
     p[0] = 't';
@@ -188,6 +178,15 @@ void MainWindow::on_privsend_clicked()
     ofs += sizeof(uint32_t);
     memcpy(ofs, t.owner.key, ECC_CURVE*2);
 
+    //Base58 encode
+    char b58p[384];
+    memset(b58p, 0, sizeof(b58p));
+    len = 384;
+    b58enc(b58p, &len, p, 147);
+
+    //Send using the REST API packet sender
+    getWeb(api_url + "/rest.php?stp=" + QString(b58p));
+
     ui->explore_address->setText(ui->topub->text());
     on_view_clicked();
 
@@ -199,22 +198,9 @@ void MainWindow::on_privsend_clicked()
         delta = time(nullptr) - st;
     }
 
-    //Sent using the REST API packet sender
-    QByteArray pb((char*)(p), 147);
-    QString rs = getWeb(api_url + "/rest.php?sendraw=" + pb.toBase64() + "&bytes=147");
-    //ui->topub->setText(pb.toBase64());
-    if(rs == "1")
-    {
-        QMessageBox msgBox;
-        msgBox.setText("Transaction sent successfully.");
-        msgBox.exec();
-    }
-    else
-    {
-        QMessageBox msgBox;
-        msgBox.setText("Transaction failed.");
-        msgBox.exec();
-    }
+    QMessageBox msgBox;
+    msgBox.setText("Transaction sent.");
+    msgBox.exec();
 
     //Done
     ui->privsend->setEnabled(true);
@@ -240,7 +226,6 @@ void MainWindow::on_send_trans_clicked()
 
     const time_t st = time(nullptr);
     ui->send_trans->setEnabled(false);
-
 
     //Send over the SSL restful api
     QString rd = getWeb(api_url + "/rest.php?frompriv=" + bpriv + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
