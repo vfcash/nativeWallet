@@ -134,8 +134,7 @@ void MainWindow::on_privsend_clicked()
     //Construct Transaction
     struct trans t;
     memset(&t, 0, sizeof(struct trans));
-    //
-    memcpy(t.from.key, bpub, ECC_CURVE+1);
+    memcpy(t.from.key, pub, ECC_CURVE+1);
     memcpy(t.to.key, mpub, ECC_CURVE+1);
     t.amount = (uint32_t)(ui->amount->value() * 1000);
 
