@@ -73,6 +73,7 @@ void MainWindow::resync()
     if(QString(bpub) != "")
     {
         QString bal = getWeb(api_url + "/rest.php?balance=" + QString(bpub));
+        bbal = bal.toDouble();
         if(bal != "" && bal[0] != 'p')
             ui->balance->setText(double_format(bal.toDouble()) + " VFC");
     }
@@ -86,7 +87,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 
 void MainWindow::on_send_trans_clicked()
 {
-    if(ui->topub->text() == "")
+    if(ui->topub->text() == "" || bbal <= 0)
         return;
 
     const time_t st = time(nullptr);

@@ -31,6 +31,7 @@ protected:
     uint8_t priv[ECC_CURVE];
     char bpub[256];
     char bpriv[256];
+    double bbal;
 
     QString getWeb(QString url);
     QString api_url;
