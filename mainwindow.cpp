@@ -186,13 +186,9 @@ void MainWindow::on_privsend_clicked()
     //Send using the REST API packet sender
     getWeb(api_url + "/rest.php?stp=" + QString(b58p));
 
-    //Prep ui
-    ui->explore_address->setText(ui->topub->text());
-    on_view_clicked();
-
     //Ensure full 3 sec wait between transactions
     time_t delta = abs(time(nullptr) - st);
-    while(delta < 3)
+    while(delta < 6)
     {
         QThread::sleep(1);
         delta = time(nullptr) - st;
@@ -201,6 +197,10 @@ void MainWindow::on_privsend_clicked()
     QMessageBox msgBox;
     msgBox.setText("Transaction sent.");
     msgBox.exec();
+
+    //Prep ui
+    ui->explore_address->setText(ui->topub->text());
+    on_view_clicked();
 
     //Done
     ui->privsend->setEnabled(true);
@@ -230,9 +230,6 @@ void MainWindow::on_send_trans_clicked()
     //Send over the SSL restful api
     QString rd = getWeb(api_url + "/rest.php?frompriv=" + bpriv + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
 
-    ui->explore_address->setText(ui->topub->text());
-    on_view_clicked();
-
     //Ensure full 3 sec wait between transactions
     time_t delta = abs(time(nullptr) - st);
     while(delta < 3)
@@ -244,6 +241,9 @@ void MainWindow::on_send_trans_clicked()
     QMessageBox msgBox;
     msgBox.setText(rd.replace(" > ", " > \n").replace("[H[J", "").replace("Transaction Sent, but unable to verify it's success. Refer to sent transactions for confirmation. Trying again..\n\n", ""));
     msgBox.exec();
+
+    ui->explore_address->setText(ui->topub->text());
+    on_view_clicked();
 
     //Done
     ui->send_trans->setEnabled(true);
