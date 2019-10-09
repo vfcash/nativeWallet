@@ -15,4 +15,4 @@ This is a Qt Creator project, Qt Creator can be setup on your native operating s
 - Using the send `Priv` transactions will be securely signed locally before being sent to a remote server. This function serves as a good implementation example for Decentralised Wallet developers to implement VF Cash transactions.
 - Once a transaction is made, the Transaction Explorer will display the transaction.
 - Due to the project using Qt it's fairly simple to compile onto a range of different target platforms as listed above.
-- Nu generated private keys are saved to ~/.vfc-keys.priv
+- Nu generated private keys are saved to `~/.vfc-keys.priv`
