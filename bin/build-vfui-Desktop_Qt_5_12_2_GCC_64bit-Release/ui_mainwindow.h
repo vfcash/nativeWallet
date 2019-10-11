@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.13.1
+** Created by: Qt User Interface Compiler version 5.12.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -191,28 +191,28 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "VF Cash Wallet / Qt", nullptr));
-#if QT_CONFIG(tooltip)
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VF Cash Wallet / Qt", nullptr));
+#ifndef QT_NO_TOOLTIP
         MainWindow->setToolTip(QString());
-#endif // QT_CONFIG(tooltip)
-        newkey->setText(QCoreApplication::translate("MainWindow", "Nu", nullptr));
+#endif // QT_NO_TOOLTIP
+        newkey->setText(QApplication::translate("MainWindow", "Nu", nullptr));
         explore_address->setText(QString());
         loginpriv->setText(QString());
-        label_11->setText(QCoreApplication::translate("MainWindow", "Amount:", nullptr));
-        label_10->setText(QCoreApplication::translate("MainWindow", "To Address:", nullptr));
-        send_trans->setText(QCoreApplication::translate("MainWindow", "Send", nullptr));
-        label_12->setText(QCoreApplication::translate("MainWindow", "Send Transaction", nullptr));
-        label_13->setText(QCoreApplication::translate("MainWindow", "Transaction Explorer", nullptr));
-        login->setText(QCoreApplication::translate("MainWindow", "Login", nullptr));
-        label_17->setText(QCoreApplication::translate("MainWindow", "Account Balance:", nullptr));
-        balance->setText(QCoreApplication::translate("MainWindow", "0 VFC", nullptr));
-        label_14->setText(QCoreApplication::translate("MainWindow", "<a href=\"https://vfcash.uk/\">VF Cash Home</a>", nullptr));
-        label_15->setText(QCoreApplication::translate("MainWindow", "<a href=\"https://x.vite.net/trade?symbol=VFC-000_BTC-000&category=BTC\">VGATE Exchange</a>", nullptr));
-        label_16->setText(QCoreApplication::translate("MainWindow", "<a href=\"https://bihodl.com/#/exchange/vfc_usdt\">Bihodl Exchange</a>", nullptr));
-        label_19->setText(QCoreApplication::translate("MainWindow", "<a href=\"https://t.me/vfcash\">Telegram</a>", nullptr));
-        label_20->setText(QCoreApplication::translate("MainWindow", "<a href=\"https://discord.gg/VFa4A5v\">Discord</a>", nullptr));
-        view->setText(QCoreApplication::translate("MainWindow", "Load", nullptr));
-        privsend->setText(QCoreApplication::translate("MainWindow", "Priv", nullptr));
+        label_11->setText(QApplication::translate("MainWindow", "Amount:", nullptr));
+        label_10->setText(QApplication::translate("MainWindow", "To Address:", nullptr));
+        send_trans->setText(QApplication::translate("MainWindow", "Send", nullptr));
+        label_12->setText(QApplication::translate("MainWindow", "Send Transaction", nullptr));
+        label_13->setText(QApplication::translate("MainWindow", "Transaction Explorer", nullptr));
+        login->setText(QApplication::translate("MainWindow", "Login", nullptr));
+        label_17->setText(QApplication::translate("MainWindow", "Account Balance:", nullptr));
+        balance->setText(QApplication::translate("MainWindow", "0 VFC", nullptr));
+        label_14->setText(QApplication::translate("MainWindow", "<a href=\"https://vfcash.uk/\">VF Cash Home</a>", nullptr));
+        label_15->setText(QApplication::translate("MainWindow", "<a href=\"https://x.vite.net/trade?symbol=VFC-000_BTC-000&category=BTC\">VGATE Exchange</a>", nullptr));
+        label_16->setText(QApplication::translate("MainWindow", "<a href=\"https://bihodl.com/#/exchange/vfc_usdt\">Bihodl Exchange</a>", nullptr));
+        label_19->setText(QApplication::translate("MainWindow", "<a href=\"https://t.me/vfcash\">Telegram</a>", nullptr));
+        label_20->setText(QApplication::translate("MainWindow", "<a href=\"https://discord.gg/VFa4A5v\">Discord</a>", nullptr));
+        view->setText(QApplication::translate("MainWindow", "Load", nullptr));
+        privsend->setText(QApplication::translate("MainWindow", "Priv", nullptr));
     } // retranslateUi
 
 };
