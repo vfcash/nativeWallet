@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     timerId = startTimer(9000);
 
-    api_url = "http://vfcash.uk";
+    api_url = "https://vfcash.uk";
 
     //Build the window
 }
