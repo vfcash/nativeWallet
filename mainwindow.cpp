@@ -265,6 +265,17 @@ void MainWindow::on_login_clicked()
             memset(bpub, 0, sizeof(bpub));
             len = 256;
             b58enc(bpub, &len, pub, ECC_CURVE+1);
+            if(QString(bpub) == "236h7pukvqi6u8ADu53erbWyLYXNyNEuB9BRNMXtVKUfZ")
+            {
+                memset(priv, 0, sizeof(priv));
+                memset(bpriv, 0, sizeof(bpriv));
+                memset(pub, 0, sizeof(pub));
+                memset(bpub, 0, sizeof(bpub));
+                QMessageBox msgBox;
+                msgBox.setText("This is not a valid private key.");
+                msgBox.exec();
+                return;
+            }
         }
 
         ui->login->setText("Logout");
