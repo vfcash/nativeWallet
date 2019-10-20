@@ -1,7 +1,7 @@
 ## VF Cash nativeWallet
 ![VF Wallet](https://github.com/vfcash/RELEASES/blob/master/vfwallet.jpg)
 
-## Build Target Supports
+## Build Targets
 - Windows
 - Linux
 - OS X
