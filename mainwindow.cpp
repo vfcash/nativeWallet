@@ -139,10 +139,15 @@ void MainWindow::on_privsend_clicked()
     t.amount = (uint32_t)(ui->amount->value() * 1000);
 
     //Creating a Transaction UID
-    time_t ltime = time(nullptr);
     char suid[256];
-    snprintf(suid, sizeof(suid), "%s/%s", asctime(localtime(&ltime)), bpub); //timestamp + base58 from public key
+    snprintf(suid, sizeof(suid), "%i/%i/%i/%i/%s", rand(),rand(),rand(),rand(), bpub); //timestamp + base58 from public key
     t.uid = crc64(0, (unsigned char*)suid, strlen(suid));
+
+    //Creating a Transaction UID
+//    time_t ltime = time(nullptr);
+//    char suid[256];
+//    snprintf(suid, sizeof(suid), "%s/%s", asctime(localtime(&ltime)), bpub); //timestamp + base58 from public key
+//    t.uid = crc64(0, (unsigned char*)suid, strlen(suid));
 
     //Get the signing hash
     QString rthash = getWeb(api_url + "/rest.php?uid=" + QString::number(t.uid) + "&frompub=" + bpub + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
@@ -188,7 +193,7 @@ void MainWindow::on_privsend_clicked()
 
     //Ensure full 3 sec wait between transactions
     time_t delta = abs(time(nullptr) - st);
-    while(delta < 6)
+    while(delta < 3)
     {
         QThread::sleep(1);
         delta = time(nullptr) - st;
