@@ -113,17 +113,17 @@ void MainWindow::on_privsend_clicked()
         return;
     }
 
-    if(bbal <= 0)
+    if(bbal <= 0 || ui->amount->value() > bbal)
     {
         QMessageBox msgBox;
-        msgBox.setText("You do not have the balance to make this transaction of " + QString::number(ui->amount->value()) + " VFC.");
+        msgBox.setText("You do not have the balance to make this transaction of " + double_format(ui->amount->value()) + " VFC.");
         msgBox.exec();
         return;
     }
 
+    //
     const time_t st = time(nullptr);
     ui->privsend->setEnabled(false);
-
 
     //base58 to bytes
     uint8_t mpub[ECC_CURVE+1];
@@ -137,6 +137,14 @@ void MainWindow::on_privsend_clicked()
     memcpy(t.from.key, pub, ECC_CURVE+1);
     memcpy(t.to.key, mpub, ECC_CURVE+1);
     t.amount = (uint32_t)(ui->amount->value() * 1000);
+
+    //Are you sure?
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Authorise", "Are you sure you wish to send " + double_format(ui->amount->value()) + " VFC (" + int_format(t.amount) + "v) to: " + ui->topub->text(), QMessageBox::Yes|QMessageBox::No);
+    if(reply == QMessageBox::No)
+    {
+        ui->privsend->setEnabled(true);
+        return;
+    }
 
     //Creating a Transaction UID
     char suid[256];
@@ -221,13 +229,18 @@ void MainWindow::on_send_trans_clicked()
         return;
     }
 
-    if(bbal <= 0)
+    if(bbal <= 0 || ui->amount->value() > bbal)
     {
         QMessageBox msgBox;
-        msgBox.setText("You do not have the balance to make this transaction of " + QString::number(ui->amount->value()) + " VFC.");
+        msgBox.setText("You do not have the balance to make this transaction of " + double_format(ui->amount->value()) + " VFC.");
         msgBox.exec();
         return;
     }
+
+    //Are you sure?
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Authorise", "Are you sure you wish to send " + double_format(ui->amount->value()) + " VFC to: " + ui->topub->text(), QMessageBox::Yes|QMessageBox::No);
+    if(reply == QMessageBox::No)
+        return;
 
     const time_t st = time(nullptr);
     ui->send_trans->setEnabled(false);
