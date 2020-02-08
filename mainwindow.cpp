@@ -1,20 +1,3 @@
-//    //Sign the block
-//    QByteArray tba = QByteArray::fromRawData((const char*)&t, sizeof(struct trans));
-//    QByteArray tohash = QCryptographicHash::hash(tba, QCryptographicHash::Sha3_256);
-//    char bohash[256];
-//    memset(bohash, 0, sizeof(bohash));
-//    len = 256;
-//    b58enc(bohash, &len, (const void*)tohash.data(), ECC_CURVE);
-
-//    msgBox.setText(rthash);
-//    msgBox.exec();
-
-//    msgBox.setText(bohash);
-//    msgBox.exec();
-
-//    thash.truncate(ECC_CURVE);
-//    if(ecdsa_sign(priv, (const uint8_t*)thash.data(), t.owner.key) == 0)
-
 #include <QProcess>
 #include <QLocale>
 #include <QDir>
@@ -69,14 +52,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->amount->setEnabled(false);
     ui->topub->setEnabled(false);
-    ui->send_trans->setEnabled(false);
+    //ui->send_trans->setEnabled(false);
     ui->privsend->setEnabled(false);
 
     timerId = startTimer(9000);
 
     api_url = "http://vfcash.co.uk";
-
-    //Build the window
 }
 
 MainWindow::~MainWindow()
@@ -151,13 +132,7 @@ void MainWindow::on_privsend_clicked()
     snprintf(suid, sizeof(suid), "%i/%i/%i/%i/%s", rand(),rand(),rand(),rand(), bpub); //timestamp + base58 from public key
     t.uid = crc64(0, (unsigned char*)suid, strlen(suid));
 
-    //Creating a Transaction UID
-//    time_t ltime = time(nullptr);
-//    char suid[256];
-//    snprintf(suid, sizeof(suid), "%s/%s", asctime(localtime(&ltime)), bpub); //timestamp + base58 from public key
-//    t.uid = crc64(0, (unsigned char*)suid, strlen(suid));
-
-    //Get the signing hash
+    //Get the signature hash
     QString rthash = getWeb(api_url + "/rest.php?uid=" + QString::number(t.uid) + "&frompub=" + bpub + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
     uint8_t thash[ECC_CURVE];
     len = ECC_CURVE;
@@ -219,53 +194,53 @@ void MainWindow::on_privsend_clicked()
     ui->privsend->setEnabled(true);
 }
 
-void MainWindow::on_send_trans_clicked()
-{
-    if(ui->topub->text() == "")
-    {
-        QMessageBox msgBox;
-        msgBox.setText("Please insert a receiver / send to address.");
-        msgBox.exec();
-        return;
-    }
+//void MainWindow::on_send_trans_clicked()
+//{
+//    if(ui->topub->text() == "")
+//    {
+//        QMessageBox msgBox;
+//        msgBox.setText("Please insert a receiver / send to address.");
+//        msgBox.exec();
+//        return;
+//    }
 
-    if(bbal <= 0 || ui->amount->value() > bbal)
-    {
-        QMessageBox msgBox;
-        msgBox.setText("You do not have the balance to make this transaction of " + double_format(ui->amount->value()) + " VFC.");
-        msgBox.exec();
-        return;
-    }
+//    if(bbal <= 0 || ui->amount->value() > bbal)
+//    {
+//        QMessageBox msgBox;
+//        msgBox.setText("You do not have the balance to make this transaction of " + double_format(ui->amount->value()) + " VFC.");
+//        msgBox.exec();
+//        return;
+//    }
 
-    //Are you sure?
-    QMessageBox::StandardButton reply = QMessageBox::question(this, "Authorise", "Are you sure you wish to send " + double_format(ui->amount->value()) + " VFC to: " + ui->topub->text(), QMessageBox::Yes|QMessageBox::No);
-    if(reply == QMessageBox::No)
-        return;
+//    //Are you sure?
+//    QMessageBox::StandardButton reply = QMessageBox::question(this, "Authorise", "Are you sure you wish to send " + double_format(ui->amount->value()) + " VFC to: " + ui->topub->text(), QMessageBox::Yes|QMessageBox::No);
+//    if(reply == QMessageBox::No)
+//        return;
 
-    const time_t st = time(nullptr);
-    ui->send_trans->setEnabled(false);
+//    const time_t st = time(nullptr);
+//    ui->send_trans->setEnabled(false);
 
-    //Send over the SSL restful api
-    QString rd = getWeb(api_url + "/rest.php?frompriv=" + bpriv + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
+//    //Send over the SSL restful api
+//    QString rd = getWeb(api_url + "/rest.php?frompriv=" + bpriv + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
 
-    //Ensure full 3 sec wait between transactions
-    time_t delta = abs(time(nullptr) - st);
-    while(delta < 3)
-    {
-        QThread::sleep(1);
-        delta = time(nullptr) - st;
-    }
+//    //Ensure full 3 sec wait between transactions
+//    time_t delta = abs(time(nullptr) - st);
+//    while(delta < 3)
+//    {
+//        QThread::sleep(1);
+//        delta = time(nullptr) - st;
+//    }
 
-    QMessageBox msgBox;
-    msgBox.setText(rd.replace(" > ", " > \n").replace("[H[J", "").replace("Transaction Sent, but unable to verify it's success. Refer to sent transactions for confirmation. Trying again..\n\n", ""));
-    msgBox.exec();
+//    QMessageBox msgBox;
+//    msgBox.setText(rd.replace(" > ", " > \n").replace("[H[J", "").replace("Transaction Sent, but unable to verify it's success. Refer to sent transactions for confirmation. Trying again..\n\n", ""));
+//    msgBox.exec();
 
-    ui->explore_address->setText(ui->topub->text());
-    on_view_clicked();
+//    ui->explore_address->setText(ui->topub->text());
+//    on_view_clicked();
 
-    //Done
-    ui->send_trans->setEnabled(true);
-}
+//    //Done
+//    ui->send_trans->setEnabled(true);
+//}
 
 void MainWindow::on_login_clicked()
 {
@@ -304,7 +279,7 @@ void MainWindow::on_login_clicked()
 
         ui->amount->setEnabled(true);
         ui->topub->setEnabled(true);
-        ui->send_trans->setEnabled(true);
+        //ui->send_trans->setEnabled(true);
         ui->privsend->setEnabled(true);
 
         on_view_clicked();
@@ -323,7 +298,7 @@ void MainWindow::on_login_clicked()
 
         ui->amount->setEnabled(false);
         ui->topub->setEnabled(false);
-        ui->send_trans->setEnabled(false);
+        //ui->send_trans->setEnabled(false);
         ui->privsend->setEnabled(false);
     }
 
@@ -334,6 +309,7 @@ void MainWindow::on_view_clicked()
     if(ui->explore_address->text() == "")
         return;
 
+    ui->view->setEnabled(false);
     QString fr = "";
     QString r = getWeb(api_url + "/rest.php?all=" + ui->explore_address->text());
     QStringList l = r.split("\n");
@@ -346,6 +322,7 @@ void MainWindow::on_view_clicked()
     ui->explore_result->setText(fr);
     QScrollBar *scrollbar = ui->explore_result->verticalScrollBar();
     scrollbar->setValue(scrollbar->maximum());
+    ui->view->setEnabled(true);
 }
 
 void MainWindow::on_explore_address_returnPressed()
@@ -384,7 +361,6 @@ void MainWindow::on_newkey_clicked()
         clipboard->setText(ui->loginpriv->text());
     }
 }
-
 
 
 
