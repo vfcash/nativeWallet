@@ -31,6 +31,8 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui
+    
+QMAKE_CXXFLAGS += -msoft-float
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
