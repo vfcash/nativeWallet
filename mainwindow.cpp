@@ -101,6 +101,14 @@ void MainWindow::on_privsend_clicked()
         msgBox.exec();
         return;
     }
+    
+    if(ui->amount->value() > 999999.000)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("You cannot send more than 999,999.000 VFC in one transaction.");
+        msgBox.exec();
+        return;
+    }
 
     //
     const time_t st = time(nullptr);
