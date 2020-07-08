@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->amount->setEnabled(false);
     ui->topub->setEnabled(false);
-    //ui->send_trans->setEnabled(false);
+    ui->send_trans->setEnabled(false);
     ui->privsend->setEnabled(false);
 
     timerId = startTimer(9000);
@@ -110,10 +110,6 @@ void MainWindow::on_privsend_clicked()
         return;
     }
 
-    //
-    const time_t st = time(nullptr);
-    ui->privsend->setEnabled(false);
-
     //base58 to bytes
     uint8_t mpub[ECC_CURVE+1];
     size_t len = ECC_CURVE+1;
@@ -134,6 +130,11 @@ void MainWindow::on_privsend_clicked()
         ui->privsend->setEnabled(true);
         return;
     }
+
+    //
+    const time_t st = time(nullptr);
+    ui->privsend->setEnabled(false);
+    ui->send_trans->setEnabled(false);
 
     //Creating a Transaction UID
     char suid[256];
@@ -194,61 +195,67 @@ void MainWindow::on_privsend_clicked()
     msgBox.setText("Transaction sent.\nTXID: " + QString::number(t.uid));
     msgBox.exec();
 
+//    msgBox.setText(api_url + "/rest.php?stp=" + QString(b58p));
+//    msgBox.exec();
+
     //Prep ui
     ui->explore_address->setText(ui->topub->text());
     on_view_clicked();
 
     //Done
+    ui->send_trans->setEnabled(true);
     ui->privsend->setEnabled(true);
 }
 
-//void MainWindow::on_send_trans_clicked()
-//{
-//    if(ui->topub->text() == "")
-//    {
-//        QMessageBox msgBox;
-//        msgBox.setText("Please insert a receiver / send to address.");
-//        msgBox.exec();
-//        return;
-//    }
+void MainWindow::on_send_trans_clicked()
+{
+    if(ui->topub->text() == "")
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Please insert a receiver / send to address.");
+        msgBox.exec();
+        return;
+    }
 
-//    if(bbal <= 0 || ui->amount->value() > bbal)
-//    {
-//        QMessageBox msgBox;
-//        msgBox.setText("You do not have the balance to make this transaction of " + double_format(ui->amount->value()) + " VFC.");
-//        msgBox.exec();
-//        return;
-//    }
+    if(bbal <= 0 || ui->amount->value() > bbal)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("You do not have the balance to make this transaction of " + double_format(ui->amount->value()) + " VFC.");
+        msgBox.exec();
+        return;
+    }
 
-//    //Are you sure?
-//    QMessageBox::StandardButton reply = QMessageBox::question(this, "Authorise", "Are you sure you wish to send " + double_format(ui->amount->value()) + " VFC to: " + ui->topub->text(), QMessageBox::Yes|QMessageBox::No);
-//    if(reply == QMessageBox::No)
-//        return;
+    //Are you sure?
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Authorise", "Are you sure you wish to send " + double_format(ui->amount->value()) + " VFC (" + int_format(ui->amount->value()*1000) + "v) to: " + ui->topub->text(), QMessageBox::Yes|QMessageBox::No);
+    if(reply == QMessageBox::No)
+        return;
 
-//    const time_t st = time(nullptr);
-//    ui->send_trans->setEnabled(false);
+    const time_t st = time(nullptr);
+    ui->send_trans->setEnabled(false);
+    ui->privsend->setEnabled(false);
 
-//    //Send over the SSL restful api
-//    QString rd = getWeb(api_url + "/rest.php?frompriv=" + bpriv + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
+    //Send over the SSL restful api
+    QString rd = getWeb(api_url + "/rest.php?frompriv=" + bpriv + "&topub=" + ui->topub->text() + "&amount=" + QString::number(ui->amount->value()));
 
-//    //Ensure full 3 sec wait between transactions
-//    time_t delta = abs(time(nullptr) - st);
-//    while(delta < 3)
-//    {
-//        QThread::sleep(1);
-//        delta = time(nullptr) - st;
-//    }
+    //Ensure full 3 sec wait between transactions
+    time_t delta = abs(time(nullptr) - st);
+    while(delta < 3)
+    {
+        QThread::sleep(1);
+        delta = time(nullptr) - st;
+    }
 
-//    QMessageBox msgBox;
-//    msgBox.setText(rd.replace(" > ", " > \n").replace("[H[J", "").replace("Transaction Sent, but unable to verify it's success. Refer to sent transactions for confirmation. Trying again..\n\n", ""));
-//    msgBox.exec();
+    QMessageBox msgBox;
+    msgBox.setText(rd.replace(" > ", " > \n").replace("[H[J", "").replace("Transaction Sent, but unable to verify it's success. Refer to sent transactions for confirmation. Trying again..\n\n", ""));
+    msgBox.exec();
 
-//    ui->explore_address->setText(ui->topub->text());
-//    on_view_clicked();
+    ui->explore_address->setText(ui->topub->text());
+    on_view_clicked();
 
-//    //Done
-//    ui->send_trans->setEnabled(true);
-//}
+    //Done
+    ui->send_trans->setEnabled(true);
+    ui->privsend->setEnabled(true);
+}
 
 void MainWindow::on_login_clicked()
 {
@@ -287,7 +294,7 @@ void MainWindow::on_login_clicked()
 
         ui->amount->setEnabled(true);
         ui->topub->setEnabled(true);
-        //ui->send_trans->setEnabled(true);
+        ui->send_trans->setEnabled(true);
         ui->privsend->setEnabled(true);
 
         on_view_clicked();
@@ -306,7 +313,7 @@ void MainWindow::on_login_clicked()
 
         ui->amount->setEnabled(false);
         ui->topub->setEnabled(false);
-        //ui->send_trans->setEnabled(false);
+        ui->send_trans->setEnabled(false);
         ui->privsend->setEnabled(false);
     }
 
