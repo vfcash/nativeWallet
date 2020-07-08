@@ -59,7 +59,7 @@ protected:
 
 private slots:
     void on_newkey_clicked();
-    //void on_send_trans_clicked();
+    void on_send_trans_clicked();
     void on_login_clicked();
     void on_explore_address_returnPressed();
     void on_view_clicked();
