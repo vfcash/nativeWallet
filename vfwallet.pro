@@ -32,7 +32,7 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
     
-QMAKE_CXXFLAGS += -msoft-float
+QMAKE_CXXFLAGS += -msoft-float -mtune=generic
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
