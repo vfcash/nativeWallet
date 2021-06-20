@@ -1,5 +1,4 @@
 ## VF Cash nativeWallet
-![VF Wallet](https://github.com/vfcash/RELEASES/blob/master/vfwallet.jpg)
 
 ## Build Targets
 - Windows
