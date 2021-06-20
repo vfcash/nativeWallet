@@ -5,7 +5,7 @@
 - Linux
 - OS X
 
-This is a Qt Creator project, Qt Creator can be setup on your native operating system and this project can be compiled with relative ease, to download the Qt Creator download the open-source option from https://www.qt.io/download
+This is a Qt Creator project, Qt Creator can be setup on your native operating system and this project can be compiled with relative ease, to download the Qt Creator download the open-source option from https://www.qt.io/download-qt-installer
 
 ## Instructions
 - In-order to login a wallet private key must be entered, doing so will cause the input private key to be replaced by it's public key counterpart.
